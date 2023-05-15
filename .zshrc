@@ -4,7 +4,9 @@ if [ ! -f $HOME/.zshrc.zwc -o $HOME/.zshrc -nt $HOME/.zshrc.zwc ]; then
 fi
 
 ### environments ###
-eval $(/usr/libexec/path_helper)
+if [ -f /usr/libexec/path_helper ]; then
+    eval $(/usr/libexec/path_helper)
+fi
 export PATH="$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:$PATH"
 export CPATH="$HOME/.local/include:$CPATH"
 export LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH"
@@ -17,7 +19,7 @@ export PATH="/opt/homebrew/opt/curl/bin:/opt/homebrew/opt/mysql-client/bin:/usr/
 export KUBECONFIG=$HOME/Documents/matsurihi_me/tomoka-kubeconfig.yaml
 export TOR_PROXY=socks5://localhost:9150
 
-_TEMURIN_TMP="$(find /Library/Java/JavaVirtualMachines -depth 1 -name 'temuarin-*.jdk' | head -n 1)"
+_TEMURIN_TMP="$(find /Library/Java/JavaVirtualMachines -d 1 -name 'temurin-*.jdk' 2>/dev/null | head -n 1)"
 if [ -n "$_TEMURIN_TMP" ]; then
     export JAVA_HOME=${_TEMURIN_TMP}/Contents/Home
 fi
