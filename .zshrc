@@ -70,6 +70,7 @@ setopt share_history short_loops
 unsetopt list_beep
 
 ### env ###
+PATH="$HOME/.rbenv/bin:$HOME/.pyenv/bin:$HOME/.nodenv/bin:$PATH"
 eval "$(rbenv init - zsh --no-rehash)"
 eval "$(pyenv init - zsh --no-rehash)"
 eval "$(nodenv init - zsh --no-rehash)"
