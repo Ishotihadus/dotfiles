@@ -18,6 +18,7 @@ export WORDCHARS=${${WORDCHARS/\//}/_/}
 export PATH="/opt/homebrew/opt/curl/bin:/opt/homebrew/opt/mysql-client/bin:/usr/local/texlive/current/bin/universal-darwin:$PATH"
 export KUBECONFIG=$HOME/Documents/matsurihi_me/tomoka-kubeconfig.yaml
 export TOR_PROXY=socks5://localhost:9150
+export PIP_REQUIRE_VIRTUALENV=true
 
 _TEMURIN_TMP="$(find /Library/Java/JavaVirtualMachines -d 1 -name 'temurin-*.jdk' 2>/dev/null | head -n 1)"
 if [ -n "$_TEMURIN_TMP" ]; then
