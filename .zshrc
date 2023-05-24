@@ -74,6 +74,7 @@ unsetopt list_beep
 PATH="$HOME/.rbenv/bin:$HOME/.pyenv/bin:$HOME/.nodenv/bin:$PATH"
 eval "$(rbenv init - zsh --no-rehash)"
 eval "$(pyenv init - zsh --no-rehash)"
+eval "$(pyenv virtualenv-init - zsh)"
 eval "$(nodenv init - zsh --no-rehash)"
 nohup rbenv rehash >/dev/null 2>&1 &!
 nohup pyenv rehash >/dev/null 2>&1 &!
