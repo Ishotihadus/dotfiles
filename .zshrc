@@ -68,6 +68,10 @@ nohup nodenv rehash >/dev/null 2>&1 &!
 ### google-cloud-sdk ###
 if [ -d /opt/homebrew/share/google-cloud-sdk ]; then
     source /opt/homebrew/share/google-cloud-sdk/path.zsh.inc
+    source /opt/homebrew/share/google-cloud-sdk/completion.zsh.inc
+elif [ -d $HOME/.local/share/google-cloud-sdk ]; then
+    source $HOME/.local/share/google-cloud-sdk/path.zsh.inc
+    source $HOME/.local/share/google-cloud-sdk/completion.zsh.inc
 fi
 
 ### zinit ###
