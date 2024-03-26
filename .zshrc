@@ -102,7 +102,14 @@ zstyle ':completion:*:manuals' separate-sections true
 zstyle ':completion:*:options' description yes
 
 ### alias ###
-alias cat='bat --paging=never --decorations=never'
+if command -v batcat &> /dev/null
+then
+    alias cat='batcat --paging=never --decorations=never'
+    alias less='batcat --paging=always'
+else
+    alias cat='bat --paging=never --decorations=never'
+    alias less='bat --paging=always'
+fi
 alias cp='cp -i'
 alias curl-tor='curl --proxy "$TOR_PROXY"'
 alias diff='colordiff -W $COLUMNS'
@@ -110,7 +117,6 @@ alias iina-streamlink-tor='streamlink --player /Applications/IINA.app/Contents/M
 alias iina-streamlink='streamlink --player /Applications/IINA.app/Contents/MacOS/iina-cli --player-args "--keep-running {filename}" --verbose-player --player-continuous-http'
 alias iina='/Applications/IINA.app/Contents/MacOS/iina-cli'
 alias l='eza'
-alias less='bat --paging=always'
 alias ls='eza -lah --group-directories-first --time-style long-iso'
 alias mv='mv -i'
 alias streamlink-tor='streamlink --https-proxy "$TOR_PROXY" --http-proxy "$TOR_PROXY"'
