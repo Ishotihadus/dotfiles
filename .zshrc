@@ -16,7 +16,7 @@ export SAVEHIST=1048576
 export WORDCHARS=${${WORDCHARS/\//}/_/}
 
 export KUBECONFIG=$HOME/Documents/matsurihi_me/tomoka-kubeconfig.yaml
-export TOR_PROXY=socks5://localhost:9150
+export TOR_PROXY=socks5://localhost:9050
 export PIP_REQUIRE_VIRTUALENV=true
 
 ### color schemes ###
@@ -27,6 +27,9 @@ source $HOME/.p10k.zsh
 ### macOS-specific ###
 if [[ "$(uname -s)" == Darwin ]]; then
     export PATH="/Library/Frameworks/Mono.framework/Home/bin:/usr/local/texlive/current/bin/universal-darwin:$PATH"
+
+    export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
+    export PATH="$(find $HOME/Library/Android/sdk/build-tools -mindepth 1 -maxdepth 1 | sort -h | tail -n 1):$PATH"
 
     eval "$(/opt/homebrew/bin/brew shellenv)"
     export PATH="/opt/homebrew/opt/curl/bin:/opt/homebrew/opt/mysql-client/bin:$PATH"
