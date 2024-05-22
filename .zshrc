@@ -1,13 +1,9 @@
 ### .zshrc compilation ###
-if [ ! -f $HOME/.zshrc.zwc -o $HOME/.zshrc -nt $HOME/.zshrc.zwc ]; then
-    zcompile $HOME/.zshrc
-fi
+if [ ! -f $HOME/.zshrc.zwc -o $HOME/.zshrc -nt $HOME/.zshrc.zwc ]; then zcompile $HOME/.zshrc; fi
 
 ### environments ###
-if [ -f /usr/libexec/path_helper ]; then
-    eval $(/usr/libexec/path_helper)
-fi
-export PATH="$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:$PATH"
+if [ -f /usr/libexec/path_helper ]; then eval $(/usr/libexec/path_helper); fi
+export PATH="$HOME/.cargo/bin:$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:$PATH"
 export CPATH="$HOME/.local/include:$CPATH"
 export LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH"
 export HISTFILE="$HOME/.zsh_history"
@@ -26,23 +22,21 @@ source $HOME/.p10k.zsh
 
 ### macOS-specific ###
 if [[ "$(uname -s)" == Darwin ]]; then
-    export PATH="/Library/Frameworks/Mono.framework/Home/bin:/usr/local/texlive/current/bin/universal-darwin:$PATH"
+  export PATH="/Library/Frameworks/Mono.framework/Home/bin:/usr/local/texlive/current/bin/universal-darwin:$PATH"
 
-    export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
-    export PATH="$(find $HOME/Library/Android/sdk/build-tools -mindepth 1 -maxdepth 1 | sort -h | tail -n 1):$PATH"
+  export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
+  export PATH="$(find $HOME/Library/Android/sdk/build-tools -mindepth 1 -maxdepth 1 | sort -h | tail -n 1):$PATH"
 
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-    export PATH="/opt/homebrew/opt/curl/bin:/opt/homebrew/opt/mysql-client/bin:$PATH"
-    export HOMEBREW_NO_AUTO_UPDATE=1
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  export PATH="/opt/homebrew/opt/curl/bin:/opt/homebrew/opt/mysql-client/bin:$PATH"
+  export HOMEBREW_NO_AUTO_UPDATE=1
 fi
 
 ### java -> temurin ###
 if [ -d /Library/Java/JavaVirtualMachines ]; then
-    _TEMURIN_TMP="$(find /Library/Java/JavaVirtualMachines -d 1 -name 'temurin-*.jdk' 2>/dev/null | tail -n 1)"
-    if [ -n "$_TEMURIN_TMP" ]; then
-        export JAVA_HOME=${_TEMURIN_TMP}/Contents/Home
-    fi
-    unset _TEMURIN_TMP
+  _TEMURIN_TMP="$(find /Library/Java/JavaVirtualMachines -d 1 -name 'temurin-*.jdk' 2>/dev/null | tail -n 1)"
+  if [ -n "$_TEMURIN_TMP" ]; then export JAVA_HOME=${_TEMURIN_TMP}/Contents/Home; fi
+  unset _TEMURIN_TMP
 fi
 
 ### key binds ###
@@ -60,21 +54,33 @@ unsetopt list_beep
 
 ### env ###
 PATH="$HOME/.rbenv/bin:$HOME/.pyenv/bin:$HOME/.nodenv/bin:$PATH"
-eval "$(rbenv init - --no-rehash zsh)"
-eval "$(pyenv init - --no-rehash zsh)"
-# eval "$(pyenv virtualenv-init - zsh)"
-eval "$(nodenv init - --no-rehash zsh)"
-nohup rbenv rehash >/dev/null 2>&1 &!
-nohup pyenv rehash >/dev/null 2>&1 &!
-nohup nodenv rehash >/dev/null 2>&1 &!
+if command -v rbenv &> /dev/null; then
+  eval "$(rbenv init - --no-rehash zsh)"
+  nohup rbenv rehash >/dev/null 2>&1 &!
+fi
+if command -v pyenv &> /dev/null; then
+  eval "$(pyenv init - --no-rehash zsh)"
+  eval "$(pyenv virtualenv-init - zsh)"
+  nohup pyenv rehash >/dev/null 2>&1 &!
+fi
+if command -v nodenv &> /dev/null; then
+  eval "$(nodenv init - --no-rehash zsh)"
+  nohup nodenv rehash >/dev/null 2>&1 &!
+fi
+if [ -e $HOME/.cargo/env ]; then source $HOME/.cargo/env; fi
+
+### anaconda ###
+export CONDA_AUTO_ACTIVATE_BASE=false
+if [ -d $HOME/.opt/anaconda3 ]; then eval "$($HOME/.opt/anaconda3/bin/conda shell.zsh hook)"
+elif [ -d /scratch/${USER}/anaconda3 ]; then eval "$(/scratch/${USER}/anaconda3/bin/conda shell.zsh hook)"; fi
 
 ### google-cloud-sdk ###
 if [ -d /opt/homebrew/share/google-cloud-sdk ]; then
-    source /opt/homebrew/share/google-cloud-sdk/path.zsh.inc
-    source /opt/homebrew/share/google-cloud-sdk/completion.zsh.inc
+  source /opt/homebrew/share/google-cloud-sdk/path.zsh.inc
+  source /opt/homebrew/share/google-cloud-sdk/completion.zsh.inc
 elif [ -d $HOME/.local/share/google-cloud-sdk ]; then
-    source $HOME/.local/share/google-cloud-sdk/path.zsh.inc
-    source $HOME/.local/share/google-cloud-sdk/completion.zsh.inc
+  source $HOME/.local/share/google-cloud-sdk/path.zsh.inc
+  source $HOME/.local/share/google-cloud-sdk/completion.zsh.inc
 fi
 
 ### zinit ###
@@ -82,14 +88,14 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 source "${ZINIT_HOME}/zinit.zsh"
 zicompdef -d rec play
 zinit light-mode for \
-    zdharma-continuum/zinit-annex-as-monitor \
-    zdharma-continuum/zinit-annex-bin-gem-node \
-    zdharma-continuum/zinit-annex-patch-dl \
-    zdharma-continuum/zinit-annex-rust \
-    depth"1" romkatv/powerlevel10k \
-    wait lucid zdharma-continuum/fast-syntax-highlighting \
-    zsh-users/zsh-autosuggestions \
-    atload"zicompinit; zicdreplay" blockf zsh-users/zsh-completions
+  zdharma-continuum/zinit-annex-as-monitor \
+  zdharma-continuum/zinit-annex-bin-gem-node \
+  zdharma-continuum/zinit-annex-patch-dl \
+  zdharma-continuum/zinit-annex-rust \
+  depth"1" romkatv/powerlevel10k \
+  wait lucid zdharma-continuum/fast-syntax-highlighting \
+  zsh-users/zsh-autosuggestions \
+  atload"zicompinit; zicdreplay" blockf zsh-users/zsh-completions conda-incubator/conda-zsh-completion
 
 ### completion ###
 zstyle ':completion:*' completer _complete _approximate _match
@@ -105,37 +111,38 @@ zstyle ':completion:*:manuals' separate-sections true
 zstyle ':completion:*:options' description yes
 
 ### alias ###
-if command -v batcat &> /dev/null
-then
-    alias cat='batcat --paging=never --decorations=never'
-    alias less='batcat --paging=always'
-else
-    alias cat='bat --paging=never --decorations=never'
-    alias less='bat --paging=always'
+if command -v batcat &> /dev/null; then
+  alias cat='batcat --paging=never --decorations=never'
+  alias less='batcat --paging=always'
+elif command -v bat &> /dev/null; then
+  alias cat='bat --paging=never --decorations=never'
+  alias less='bat --paging=always'
 fi
 alias cp='cp -i'
 alias curl-tor='curl --proxy "$TOR_PROXY"'
 alias diff='colordiff -W $COLUMNS'
-alias iina-streamlink-tor='streamlink --player /Applications/IINA.app/Contents/MacOS/iina-cli --player-args "--keep-running {filename}" --verbose-player --player-continuous-http --https-proxy "$TOR_PROXY" --http-proxy "$TOR_PROXY"'
-alias iina-streamlink='streamlink --player /Applications/IINA.app/Contents/MacOS/iina-cli --player-args "--keep-running {filename}" --verbose-player --player-continuous-http'
 alias iina='/Applications/IINA.app/Contents/MacOS/iina-cli'
-alias l='eza'
-alias ls='eza -lah --group-directories-first --time-style long-iso'
+alias iina-streamlink='streamlink --player /Applications/IINA.app/Contents/MacOS/iina-cli --player-args "--keep-running {filename}" --verbose-player --player-continuous-http'
+alias iina-streamlink-tor='streamlink --player /Applications/IINA.app/Contents/MacOS/iina-cli --player-args "--keep-running {filename}" --verbose-player --player-continuous-http --https-proxy "$TOR_PROXY" --http-proxy "$TOR_PROXY"'
+if command -v eza &> /dev/null; then
+  alias l='eza'
+  alias ls='eza -lah --group-directories-first --time-style long-iso'
+fi
 alias mv='mv -i'
 alias streamlink-tor='streamlink --https-proxy "$TOR_PROXY" --http-proxy "$TOR_PROXY"'
 alias tarc='tar --exclude .DS_Store --disable-copyfile --no-mac-metadata --no-xattrs -c'
 alias vim='nvim'
 
 if [[ "$(uname -s)" == Darwin ]]; then
-    alias code='/Applications/Visual\ Studio\ Code\ -\ Insiders.app/Contents/Resources/app/bin/code'
-    alias il2cppdumper="dotnet ${HOME}/.opt/il2cppdumper/Il2CppDumper.dll"
-    alias rm='mvtrash'
-    alias texturetool='/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/texturetool'
+  alias code='/Applications/Visual\ Studio\ Code\ -\ Insiders.app/Contents/Resources/app/bin/code'
+  alias il2cppdumper="/opt/homebrew/opt/dotnet@6/libexec/dotnet /${HOME}/.opt/il2cppdumper/Il2CppDumper.dll"
+  alias rm='mvtrash'
+  alias texturetool='/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/texturetool'
 fi
 if [ -d /opt/homebrew/opt/binutils ]; then
-    for f in /opt/homebrew/opt/binutils/bin/*(@); do
-        alias ${f##*/}=$f
-    done
+  for f in /opt/homebrew/opt/binutils/bin/*(@); do
+    alias ${f##*/}=$f
+  done
 fi
 
 ### normalize PATH ###
